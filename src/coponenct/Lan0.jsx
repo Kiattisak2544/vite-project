@@ -20,7 +20,7 @@ const Lan0 = () => {
     // เช็คสถานะคอมพิวเตอร์
     const [computer, setComputer] = useState([
         { name: 'Champ_tng62', ip: '192.168.0.10', status: 'checking' },
-        { name: 'Champ_NPT57', ip: '192.168.0.9', status: 'checking' },
+        { name: 'Champ_NPT57', ip: '192.168.0.8', status: 'checking' },
         { name: 'Champ_p01', ip: '192.168.0.2', status: 'checking' },
 
     ]);
