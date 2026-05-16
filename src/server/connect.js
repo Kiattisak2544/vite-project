@@ -2,6 +2,10 @@
 import dotenv from "dotenv";
 //ใช้สำหรับเชื่อมต่อฐานข้อมูล
 import { MongoClient } from "mongodb";
+import dns from "dns";
+
+// แก้ปัญหา querySrv ECONNREFUSED โดยกำหนดให้ Node.js ใช้ Google DNS
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 // โหลดตัวแปรจากไฟล์ .env
 dotenv.config();
