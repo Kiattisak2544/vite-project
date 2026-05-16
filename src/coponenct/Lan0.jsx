@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FiRefreshCw } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,6 +7,16 @@ const Lan0 = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const reboot = async () => {
+
+        const res = await fetch("192.168.0.254/reboot", {
+            method: "POST",
+        });
+
+
+    }
+
+    const [open, setOpen] = useState(false);
 
     const [sessionUser, setSessionUser] = useState(null);
     const [theme, setTheme] = useState(() => {
@@ -14,7 +25,7 @@ const Lan0 = () => {
 
     const [isNetworkOpen, setIsNetworkOpen] = useState(false);
     const [routers, setRouters] = useState([
-        { name: 'ตัวส่ง router nt', ip: '192.168.0.254', status: 'checking' },
+        { name: 'ตัวส่ง router nt', ip: '192.168.0.254', status: 'checking', icon: 'fa-solid fa-setting' },
 
     ]);
     // เช็คสถานะคอมพิวเตอร์
@@ -160,6 +171,7 @@ const Lan0 = () => {
                                         <span className={`${isSidebarOpen ? 'block' : 'hidden'} font-semibold tracking-wide flex-1 text-left`}>
                                             {item.name}
                                         </span>
+
                                         {isNetworkMap && isSidebarOpen && (
                                             <i className={`fa-solid fa-chevron-down text-[0.7rem] transition-transform duration-300 ${isNetworkOpen ? 'rotate-180' : ''} mr-2`}></i>
                                         )}
@@ -292,6 +304,45 @@ const Lan0 = () => {
                                                 )}
                                                 <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${router.status === 'online' ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,1)]' : router.status === 'offline' ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]' : 'bg-slate-300 dark:bg-slate-600 animate-pulse'}`}></span>
                                             </div>
+                                            <button
+                                                onClick={() => setOpen(true)}
+                                                className="group flex items-center justify-center w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 transition-colors"
+                                            >
+                                                <i className="fa-solid fa-gear text-xl transition-transform duration-300 group-hover:rotate-180"></i>
+                                            </button>
+
+                                            {/* Modal */}
+                                            {open && (
+                                                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                                                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl w-[500px] shadow-xl">
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <h2 className="text-lg font-semibold">
+                                                                Settings Router  {router.name}
+                                                            </h2>
+
+                                                            <button onClick={() => setOpen(false)}>
+                                                                <i className="fa-solid fa-xmark text-xl"></i>
+                                                            </button>
+                                                        </div>
+
+                                                        <form action="" method="get">
+                                                            <div className="space-y-4 mt-2">
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Router Name</label>
+                                                                    <input type="text" defaultValue={router.name} className="w-full px-4 py-2 border border-slate-200 rounded-lg dark:bg-slate-900/50 dark:border-slate-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Enter router name" />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">IP Address</label>
+                                                                    <input type="text" defaultValue={router.ip} className="w-full px-4 py-2 border border-slate-200 rounded-lg dark:bg-slate-900/50 dark:border-slate-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Enter IP address" />
+                                                                </div>
+                                                                <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md shadow-blue-500/20 transition-colors mt-4" onClick={btn - reboot}>
+                                                                    Save Configuration
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
