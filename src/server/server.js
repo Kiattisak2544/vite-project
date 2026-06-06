@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import path from "path";
 //ใช้สำหรับจัดการ path ของไฟล์
 import { fileURLToPath } from "url";
+// ใช้สำหรับจัดการ session
+import session from "express-session";
 //ใช้สำหรับเชื่อมต่อฐานข้อมูล
 import { connectDB } from "./connect.js";
 //ไลบรารีทำเซิร์ฟเวอร์
@@ -17,6 +19,9 @@ import loginRouter from "./login.js";
 import routerCheckRouter from "./routerCheck.js";
 //ไฟล์เช็คคอมพิวเตอร์ API
 import comCheckRouter from "./comCheck.js";
+
+//ไฟล์แจ้งเตือนเมื่อเร้าเตอร์ down
+import routerDownRouter from "./router-down.js";
 
 //ใช้สำหรับจัดการ path ของไฟล์
 const __filename = fileURLToPath(import.meta.url);
@@ -40,11 +45,32 @@ app.use("/", registerRouter);
 // เปิดใช้งาน API สำหรับ login
 app.use("/", loginRouter);
 
+// 
+app.use(
+    session({
+        secret: 'TnG_System',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 24 * 60 * 60 * 1000,
+        }
+
+    })
+)
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
+
 // เปิดใช้งาน API สำหรับเช็คเร้าเตอร์
 app.use("/", routerCheckRouter);
 
 // เปิดใช้งาน API สำหรับเช็คคอมพิวเตอร์
 app.use("/", comCheckRouter);
+
+//เปิดใช้งาน API สำหรับแจ้งเตือนเมื่อเร้าเตอร์ down
+app.use("/server", routerDownRouter);
 
 //เปิดเซิร์ฟเวอร์ที่ port 5000 (หรือตาม .env)
 const PORT = process.env.PORT || 5000;

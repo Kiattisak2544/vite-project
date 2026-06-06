@@ -24,6 +24,32 @@ const Lan0 = () => {
         { name: 'Champ_p01', ip: '192.168.0.2', status: 'checking' },
 
     ]);
+    // เช็ค Router และเก็บข้อมูล ถ้าสถานะ offline
+    useEffect(() => {
+        const sendStatus = async () => {
+            if (!routers || routers.length === 0) return;
+
+            try {
+                const res = await axios.post(
+                    "http://localhost:5000/server/router-down",
+                    {
+                        routers: routers.map(r => ({
+                            ip: r.ip,
+                            name_route: r.name,
+                            status: r.status   // ✅ ส่ง status ไปด้วย
+                        }))
+                    }
+                );
+
+                // console.log("success:", res.data);
+
+            } catch (err) {
+                console.error("error:", err.response?.data || err.message);
+            }
+        };
+
+        sendStatus();
+    }, [routers]);
 
     const checkComputer = async (isSilent = false) => {
         if (!isSilent) setIsChecking(true);

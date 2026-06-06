@@ -26,3 +26,4 @@ dist-ssr
 # MongoDB data directory
 data/
 db/
+node_modules

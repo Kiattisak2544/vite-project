@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+
+
 const Lan1 = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -31,15 +33,32 @@ const Lan1 = () => {
         { name: 'NP_Sale_5', ip: '192.168.1.91', anydesk: '1365505589', status: 'checking' },
     ]);
 
+    // เช็ค Router และเก็บข้อมูล ถ้าสถานะ offline
     useEffect(() => {
-        const hasOffline = routers.some(r => r.status === "offline");
+        const sendStatus = async () => {
+            if (!routers || routers.length === 0) return;
 
-        if (hasOffline) {
-            console.log("มี router offline");
+            try {
+                const res = await axios.post(
+                    "http://localhost:5000/server/router-down",
+                    {
+                        routers: routers.map(r => ({
+                            ip: r.ip,
+                            name_route: r.name,
+                            status: r.status   // ✅ ส่ง status ไปด้วย
+                        }))
+                    }
+                );
 
-        }
+                // console.log("success:", res.data);
+
+            } catch (err) {
+                console.error("error:", err.response?.data || err.message);
+            }
+        };
+
+        sendStatus();
     }, [routers]);
-
 
 
     const checkComputer = async (isSilent = false) => {
