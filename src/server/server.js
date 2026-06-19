@@ -17,9 +17,13 @@ import registerRouter from "./register.js";
 import loginRouter from "./login.js";
 //ไฟล์เช็คเร้าเตอร์ API
 import routerCheckRouter from "./routerCheck.js";
+
 //ไฟล์เช็คคอมพิวเตอร์ API
 import comCheckRouter from "./comCheck.js";
-
+//ไฟล์เช็คcofee API
+import cofeeCheckRouter from "./cofeecheck.js";
+//ไฟล์เช็ค sale API
+import saleCheckRouter from "./saleCheck.js";
 //ไฟล์แจ้งเตือนเมื่อเร้าเตอร์ down
 import routerDownRouter from "./router-down.js";
 
@@ -68,6 +72,12 @@ app.use("/", routerCheckRouter);
 
 // เปิดใช้งาน API สำหรับเช็คคอมพิวเตอร์
 app.use("/", comCheckRouter);
+
+//เปิดใช้งาน API สำหรับเช็คsale
+app.use("/", saleCheckRouter);
+
+//เปิดใช้งาน API สำหรับเช็คcofee
+app.use("/server", cofeeCheckRouter);
 
 //เปิดใช้งาน API สำหรับแจ้งเตือนเมื่อเร้าเตอร์ down
 app.use("/server", routerDownRouter);

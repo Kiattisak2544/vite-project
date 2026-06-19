@@ -19,6 +19,8 @@ const Lan1 = () => {
         { name: 'blue_sc_wifi (ห้องเลขา)', ip: '192.168.1.150', status: 'checking' },
         { name: 'ตัวส่ง 710', ip: '192.168.1.233', status: 'checking' },
         { name: 'ตัวรับ 710', ip: '192.168.1.234', status: 'checking' },
+        { name: 'ตัวส่ง 239', ip: '192.168.1.239', status: 'checking' },
+        { name: 'ตัวรับ 510(spare)', ip: '192.168.1.246', status: 'checking' },
         { name: 'โรงงท่อ', ip: '192.168.1.247', status: 'checking' },
         { name: 'โรงงท่อ', ip: '192.168.1.250', status: 'checking' },
         { name: 'โรงซ่อม', ip: '192.168.1.252', status: 'checking' },
@@ -36,12 +38,15 @@ const Lan1 = () => {
     // เช็ค Router และเก็บข้อมูล ถ้าสถานะ offline
     useEffect(() => {
         const sendStatus = async () => {
+            //เช็ค ค่าว่าง หรือ ค่าที่ส่งมาไม่ถูกต้อง
             if (!routers || routers.length === 0) return;
 
             try {
+                //ส่งข้อมูลไปที่ router-down
                 const res = await axios.post(
                     "http://localhost:5000/server/router-down",
                     {
+                        // map ข้อมูลที่ส่งไป
                         routers: routers.map(r => ({
                             ip: r.ip,
                             name_route: r.name,

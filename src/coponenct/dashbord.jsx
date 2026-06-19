@@ -16,10 +16,21 @@ const Dashboard = () => {
 
 
     const [routers, setRouters] = useState([
-        { name: 'Blue_Boss', ip: '192.168.2.207', status: 'checking' },
+        { name: 'ตัวส่ง router nt', ip: '192.168.0.254', status: 'checking' },
+        { name: 'blue_sc_wifi (ห้องเลขา)', ip: '192.168.1.150', status: 'checking' },
+        { name: 'ตัวส่ง 710', ip: '192.168.1.233', status: 'checking' },
+        { name: 'ตัวรับ 710', ip: '192.168.1.234', status: 'checking' },
+        { name: 'ตัวส่ง 239', ip: '192.168.1.239', status: 'checking' },
+        { name: 'โรงงท่อ', ip: '192.168.1.247', status: 'checking' },
+        { name: 'โรงงท่อ', ip: '192.168.1.250', status: 'checking' },
+        { name: 'โรงซ่อม', ip: '192.168.1.252', status: 'checking' },
+        { name: 'BconData', ip: '192.168.1.5', status: 'checking' },
+        { name: 'BluE_Meeting_FL2', ip: '192.168.2.120', status: 'checking' },
+        { name: 'blue_MeetingA_FL3', ip: '192.168.2.130', status: 'checking' },
+        { name: 'blue_Design_2023', ip: '192.168.2.100', status: 'checking' },
         { name: 'Blue_cafe25', ip: '192.168.2.60', status: 'checking' },
-        { name: 'Blue_WIFI', ip: '192.168.2.253', status: 'checking' },
-        { name: 'blue_Design_2023', ip: '192.168.2.100', status: 'checking' }
+        { name: 'Blue_Boss', ip: '192.168.2.207', status: 'checking' },
+
     ]);
     const [isChecking, setIsChecking] = useState(false);
 
@@ -36,6 +47,9 @@ const Dashboard = () => {
             if (!isSilent) setIsChecking(false);
         }
     };
+
+    const successRouters = routers.filter(r => r.status === 'online');
+    const offlineRouters = routers.filter(r => r.status === 'offline');
 
     useEffect(() => {
         // ดึง session จาก localStorage
@@ -228,17 +242,20 @@ const Dashboard = () => {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         {[
-                            { title: "Total Devices", value: `${routers.length} Nodes`, icon: "fa-solid fa-server" },
-                            { title: "System Uptime", value: "15 Days", icon: "fa-solid fa-clock" },
-                            { title: "Average Ping", value: `${isChecking ? '--' : averagePing} ms`, icon: "fa-solid fa-wifi" }
+                            { title: "Total Devices", value: `${routers.length} Nodes`, className: "", icon: "fa-solid fa-server", status: "Status Normal" },
+                            { title: "Total Devices Online", value: `${successRouters.length} Nodes`, className: "text-green-700", icon: "fa-solid fa-check", status: "Status Online" },
+                            { title: "Total Devices Offline", value: `${offlineRouters.length} Nodes`, className: "text-red-700", icon: "fa-solid fa-times", status: "Status Offline" },
+
+                            // { title: "System Uptime", value: "15 Days", icon: "fa-solid fa-clock", status: "" },
+                            { title: "Average Ping", value: `${isChecking ? '--' : averagePing} ms`, icon: "fa-solid fa-wifi", status: "" }
                         ].map((stat, i) => (
-                            <div key={i} className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-lg dark:hover:shadow-slate-900/50 transition transform duration-300">
-                                <h3 className="text-slate-400 dark:text-slate-500 font-bold mb-2 text-xs uppercase tracking-widest">{stat.title}</h3>
+                            <div key={i} className={` ${stat.className} bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-lg dark:hover:shadow-slate-900/50 transition transform duration-300`}>
+                                <h3 className={` text-slate-400 dark:text-slate-500 font-bold mb-2 text-xs uppercase tracking-widest `}>{stat.title}</h3>
                                 <div className="text-3xl font-black text-slate-800 dark:text-white mb-4 transition-colors">{stat.value}</div>
-                                <span className="inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors">
-                                    <i className={`${stat.icon} mr-1.5`}></i> Status Normal
+                                <span className={`${stat.className} inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors`}>
+                                    <i className={`${stat.icon} mr-1.5`}></i> {stat.status}
                                 </span>
                             </div>
                         ))}
@@ -246,7 +263,7 @@ const Dashboard = () => {
 
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                         {/* Router Status List */}
-                        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none flex flex-col transition-colors">
+                        {/* <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none flex flex-col transition-colors">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors">Network Routers</h3>
                                 <button onClick={checkRouters} disabled={isChecking} className="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md shadow-blue-500/20 transition disabled:opacity-50">
@@ -276,6 +293,75 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        </div> */}
+                        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none flex flex-col transition-colors">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-extrabold text-slate-800 dark:text-white transition-colors">
+                                    Network Node Grid
+                                </h3>
+                                <div className="text-xs text-slate-400 dark:text-slate-500 font-semibold bg-slate-50 dark:bg-slate-700/30 px-2 py-1 rounded-md">
+                                    {successRouters.length} / {routers.length} Online
+                                </div>
+                            </div>
+
+
+                            {/* Node Grid - Small style */}
+                            <div className="flex flex-wrap gap-[4px] py-4 justify-start items-center">
+                                {routers.map((router, i) => {
+                                    let statusColor = "bg-slate-300 dark:bg-slate-600";
+                                    let statusShadow = "";
+                                    let ringColor = "";
+
+                                    if (router.status === "online") {
+                                        statusColor = "bg-emerald-500 dark:bg-emerald-400";
+                                        statusShadow = "shadow-[0_0_3px_rgba(16,185,129,0.3)]";
+                                        ringColor = "hover:ring-1 hover:ring-emerald-300 dark:hover:ring-emerald-700";
+                                    } else if (router.status === "offline") {
+                                        statusColor = "bg-rose-500 dark:bg-rose-400 animate-pulse";
+                                        statusShadow = "shadow-[0_0_3px_rgba(244,63,94,0.3)]";
+                                        ringColor = "hover:ring-1 hover:ring-rose-300 dark:hover:ring-rose-700";
+                                    }
+
+                                    return (
+                                        <div
+                                            key={i}
+                                            className={`relative group w-3 h-3 rounded-[2px] ${statusColor} ${statusShadow} ${ringColor} cursor-pointer transform hover:scale-125 transition-all duration-150 flex items-center justify-center`}
+                                            title={`${router.name}\nIP: ${router.ip}\nStatus: ${router.status}${router.pingTime ? `\nPing: ${router.pingTime} ms` : ""}`}
+                                        >
+                                            {/* Custom Hover Tooltip */}
+                                            <div className="absolute bottom-full mb-2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none transition-all duration-150">
+                                                <div className="bg-slate-900 dark:bg-slate-950 text-white text-[0.72rem] py-1.5 px-2.5 rounded-lg shadow-xl whitespace-nowrap leading-tight border border-slate-800 dark:border-slate-800">
+                                                    <span className="font-bold block text-left text-[0.6rem]">{router.name}</span>
+                                                    <span className="text-slate-400 font-mono text-[0.68rem] block text-left mt-0.5">{router.ip}</span>
+                                                    <span className={`block mt-1 font-semibold text-left ${router.status === 'online' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                        {router.status === 'online' ? `Online ${router.pingTime ? `(${router.pingTime} ms)` : ''}` : 'Offline'}
+                                                    </span>
+                                                </div>
+                                                <div className="w-1.5 h-1.5 bg-slate-900 dark:bg-slate-950 rotate-45 -mt-1 border-r border-b border-slate-800 dark:border-slate-800"></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Legend */}
+                            <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-700/50 flex flex-wrap gap-2 justify-between items-center text-xs text-slate-500 dark:text-slate-400">
+                                <span className="font-semibold">Legend</span>
+                                <div className="flex gap-3 items-center">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500 shadow-[0_0_2px_rgba(16,185,129,0.3)]"></div>
+                                        <span>Online</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-[2px] bg-rose-500 shadow-[0_0_2px_rgba(244,63,94,0.3)] animate-pulse"></div>
+                                        <span>Offline</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-[2px] bg-slate-300 dark:bg-slate-600 animate-pulse"></div>
+                                        <span>Checking</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

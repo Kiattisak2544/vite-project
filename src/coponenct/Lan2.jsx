@@ -15,6 +15,9 @@ const Lan2 = () => {
     });
 
     const [isNetworkOpen, setIsNetworkOpen] = useState(false);
+    const [isItRoomOpen, setIsItRoomOpen] = useState(false);
+    const [isSaleOpen, setIsSaleOpen] = useState(false);
+    const [iscofeeOpen, setIsCofeeOpen] = useState(false);
     const [routers, setRouters] = useState([
         { name: 'BluE_Meeting_FL2', ip: '192.168.2.120', status: 'checking' },
         { name: 'blue_MeetingA_FL3', ip: '192.168.2.130', status: 'checking' },
@@ -30,6 +33,16 @@ const Lan2 = () => {
         { name: 'chiler', ip: '192.168.2.254', status: 'checking' }
 
     ]);
+    const [sale, setSale] = useState([
+        { name: 'TNG-RT-MG', ip: '192.168.2.103', status: 'checking' },
+        { name: 'TNG-DS-MG', ip: '192.168.2.104', status: 'checking' },
+        { name: 'TNG-RT-01', ip: '192.168.2.105', status: 'checking' },
+        { name: 'TNG-DS-02', ip: '192.168.2.106', status: 'checking' },
+    ]);
+    const [cofee, setCofee] = useState([
+        { name: 'TNG-CF-01', ip: '192.168.2.46', status: 'checking' },
+    ]);
+
 
     // เช็ค Router และเก็บข้อมูล ถ้าสถานะ offline
     useEffect(() => {
@@ -48,7 +61,7 @@ const Lan2 = () => {
                     }
                 );
 
-                console.log("success:", res.data);
+                // console.log("success:", res.data);
 
             } catch (err) {
                 console.error("error:", err.response?.data || err.message);
@@ -74,7 +87,34 @@ const Lan2 = () => {
         }
     };
 
+    const checkSale = async (isSilent = false) => {
+        if (!isSilent) setIsChecking(true);
+        try {
+            const res = await axios.post("http://localhost:5000/server/check-sale", { sale });
+            if (res.data.status === 'ok') {
+                setSale(res.data.data);
+            }
+        } catch (error) {
+            console.error("Failed to check sale", error);
+        } finally {
+            if (!isSilent) setIsChecking(false);
+        }
+    };
+    const checkCofee = async (isSilent = false) => {
+        if (!isSilent) setIsChecking(true);
+        try {
+            const res = await axios.post("http://localhost:5000/server/check-cofee", { cofee });
+            if (res.data.status === 'ok') {
+                setCofee(res.data.data);
+            }
+        } catch (error) {
+            console.error("Failed to check cofee", error);
+        } finally {
+            if (!isSilent) setIsChecking(false);
+        }
+    };
 
+    // เช็ค Router และเก็บข้อมูล ถ้าสถานะ offline
     const [isChecking, setIsChecking] = useState(false);
 
     const checkRouters = async (isSilent = false) => {
@@ -111,11 +151,15 @@ const Lan2 = () => {
 
         checkRouters();
         checkComputer();
+        checkSale();
+        checkCofee();
 
         // Real-time polling every 10 seconds
         const intervalId = setInterval(() => {
             checkRouters(true); // true = isSilent (ไม่ให้ปุ่ม Refresh หมุนติ้วๆ)
             checkComputer(true);
+            checkSale(true);
+            checkCofee(true);
         }, 10000);
 
         // Listen for theme changes from other tabs
@@ -341,10 +385,21 @@ const Lan2 = () => {
                             </div>
                         </div>
 
-                        {/* Recent Network Events */}
+                        {/* Recent Network Events - ห้องIT */}
                         <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none flex flex-col transition-colors">
-                            <h3 className="text-xl font-extrabold text-slate-800 dark:text-white mb-6 transition-colors font-label" id="font-label">ห้องit</h3>
-                            <div className="space-y-4 flex-1">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">ห้องit</h3>
+                                <button
+                                    onClick={() => setIsItRoomOpen(!isItRoomOpen)}
+                                    className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
+                                >
+                                    <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${isItRoomOpen ? '' : '-rotate-90'}`}></i>
+                                    <span>{isItRoomOpen ? 'ซ่อน' : 'แสดง'}</span>
+                                </button>
+                            </div>
+                            <div
+                                className={`space-y-4 flex-1 overflow-hidden transition-all duration-300 ease-in-out ${isItRoomOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+                            >
                                 {computer.map((item, index) => (
                                     <div key={index} className="flex items-center justify-between py-3 px-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition rounded-lg">
                                         <div className="flex items-center gap-4">
@@ -370,6 +425,96 @@ const Lan2 = () => {
                                     </div>
                                 ))}
                             </div>
+
+                            {/* Divider */}
+                            <div className="my-6 border-t border-slate-200 dark:border-slate-700"></div>
+
+                            {/* 3D Design (อยู่ใน card เดียวกับห้องIT) */}
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">3D Design</h3>
+                                <button
+                                    onClick={() => setIsSaleOpen(!isSaleOpen)}
+                                    className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
+                                >
+                                    <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${isSaleOpen ? '' : '-rotate-90'}`}></i>
+                                    <span>{isSaleOpen ? 'ซ่อน' : 'แสดง'}</span>
+                                </button>
+                            </div>
+                            <div
+                                className={`space-y-4 flex-1 overflow-hidden transition-all duration-300 ease-in-out ${isSaleOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+                            >
+                                {sale.map((item, index) => (
+                                    <div key={index} className="flex items-center justify-between py-3 px-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition rounded-lg">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`flex items-center justify-center ${item.status === 'Warning' ? 'text-orange-400 dark:text-orange-500' : item.status === 'Notice' ? 'text-blue-400 dark:text-blue-500' : 'text-green-400 dark:text-green-500'}`}>
+                                                <i className={`fa-solid fa-computer text-xl`}></i>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-slate-700 dark:text-slate-300 font-medium transition-colors" id="font-label">{item.name}</span>
+                                                <span className="text-slate-400 dark:text-slate-500 text-sm font-mono" id="font-label">{item.ip}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 pr-2" title={`Status: ${item.status}`}>
+                                            {item.status === 'online' && item.pingTime && item.pingTime !== 'unknown' && (
+                                                <span className="text-slate-400 dark:text-slate-500 text-xs font-mono">{item.pingTime} ms</span>
+                                            )}
+                                            <div className="relative flex h-3 w-3 items-center justify-center">
+                                                {item.status === 'online' && (
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 shadow-[0_0_10px_rgba(7ade80,1)]"></span>
+                                                )}
+                                                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${item.status === 'online' ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,1)]' : item.status === 'offline' ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]' : 'bg-slate-300 dark:bg-slate-600 animate-pulse'}`}></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="my-6 border-t border-slate-200 dark:border-slate-700"></div>
+                            {/*--------------------------------- End ------------------------------------------- */}
+
+                            {/*--------------------------------- Cofee --------------------------------------------*/}
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">Cofee</h3>
+                                <button
+                                    onClick={() => setIsCofeeOpen(!iscofeeOpen)}
+                                    className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
+                                >
+                                    <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${iscofeeOpen ? '' : '-rotate-90'}`}></i>
+                                    <span>{iscofeeOpen ? 'ซ่อน' : 'แสดง'}</span>
+                                </button>
+                            </div>
+                            <div
+                                className={`space-y-4 flex-1 overflow-hidden transition-all duration-300 ease-in-out ${iscofeeOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+                            >
+                                {cofee.map((item, index) => (
+                                    <div key={index} className="flex items-center justify-between py-3 px-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition rounded-lg">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`flex items-center justify-center ${item.status === 'Warning' ? 'text-orange-400 dark:text-orange-500' : item.status === 'Notice' ? 'text-blue-400 dark:text-blue-500' : 'text-green-400 dark:text-green-500'}`}>
+                                                <i className={`fa-solid fa-computer text-xl`}></i>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-slate-700 dark:text-slate-300 font-medium transition-colors" id="font-label">{item.name}</span>
+                                                <span className="text-slate-400 dark:text-slate-500 text-sm font-mono" id="font-label">{item.ip}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 pr-2" title={`Status: ${item.status}`}>
+                                            {item.status === 'online' && item.pingTime && item.pingTime !== 'unknown' && (
+                                                <span className="text-slate-400 dark:text-slate-500 text-xs font-mono">{item.pingTime} ms</span>
+                                            )}
+                                            <div className="relative flex h-3 w-3 items-center justify-center">
+                                                {item.status === 'online' && (
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 shadow-[0_0_10px_rgba(7ade80,1)]"></span>
+                                                )}
+                                                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${item.status === 'online' ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,1)]' : item.status === 'offline' ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]' : 'bg-slate-300 dark:bg-slate-600 animate-pulse'}`}></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+
+
+
+
                         </div>
                     </div>
                 </div>
