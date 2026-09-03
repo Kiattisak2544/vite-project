@@ -26,6 +26,12 @@ import cofeeCheckRouter from "./cofeecheck.js";
 import saleCheckRouter from "./saleCheck.js";
 //ไฟล์แจ้งเตือนเมื่อเร้าเตอร์ down
 import routerDownRouter from "./router-down.js";
+//ไฟล์เช็ค speed API
+import speedRouter from "./api.js";
+//ไฟล์ดึงข้อมูล
+import fetchDataRouter from "./fetch_data.js";
+//ไฟล์เช็ค system
+import systemRouter from "./system.js";
 
 //ใช้สำหรับจัดการ path ของไฟล์
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +55,8 @@ app.use("/", registerRouter);
 // เปิดใช้งาน API สำหรับ login
 app.use("/", loginRouter);
 
+
+
 // 
 app.use(
     session({
@@ -67,6 +75,14 @@ app.use(cors({
     credentials: true
 }));
 
+// app.use(cors({
+//     origin: [
+//         "http://localhost:5173",
+//         "http://localhost:8080"
+//     ],
+//     credentials: true
+// }));
+
 // เปิดใช้งาน API สำหรับเช็คเร้าเตอร์
 app.use("/", routerCheckRouter);
 
@@ -81,6 +97,13 @@ app.use("/server", cofeeCheckRouter);
 
 //เปิดใช้งาน API สำหรับแจ้งเตือนเมื่อเร้าเตอร์ down
 app.use("/server", routerDownRouter);
+
+//เปิดใช้งาน API สำหรับเช็คความเร็ว internet
+app.use("/server", speedRouter);
+
+app.use("/server", fetchDataRouter);
+
+app.use("/server", systemRouter);
 
 //เปิดเซิร์ฟเวอร์ที่ port 5000 (หรือตาม .env)
 const PORT = process.env.PORT || 5000;

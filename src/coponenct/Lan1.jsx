@@ -9,6 +9,8 @@ const Lan1 = () => {
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    const [issaleshow, setIssaleshow] = useState(false);
+
     const [sessionUser, setSessionUser] = useState(null);
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem('theme') || 'light';

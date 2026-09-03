@@ -389,8 +389,10 @@ const Lan2 = () => {
                         <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-6 shadow-lg shadow-slate-200/40 dark:shadow-none flex flex-col transition-colors">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">ห้องit</h3>
+                                {/* Accordion: เมื่อกดเปิด "ห้อง IT" จะปิด section อื่น (3D Design, Cofee) อัตโนมัติ
+                                   ถ้ากดซ้ำจะ toggle ปิดตัวเองได้ เพราะใช้ !isItRoomOpen */}
                                 <button
-                                    onClick={() => setIsItRoomOpen(!isItRoomOpen)}
+                                    onClick={() => { setIsItRoomOpen(!isItRoomOpen); setIsSaleOpen(false); setIsCofeeOpen(false); }}
                                     className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
                                 >
                                     <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${isItRoomOpen ? '' : '-rotate-90'}`}></i>
@@ -432,8 +434,10 @@ const Lan2 = () => {
                             {/* 3D Design (อยู่ใน card เดียวกับห้องIT) */}
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">3D Design</h3>
+                                {/* Accordion: เมื่อกดเปิด "3D Design" จะปิด section อื่น (ห้อง IT, Cofee) อัตโนมัติ
+                                   ถ้ากดซ้ำจะ toggle ปิดตัวเองได้ เพราะใช้ !isSaleOpen */}
                                 <button
-                                    onClick={() => setIsSaleOpen(!isSaleOpen)}
+                                    onClick={() => { setIsSaleOpen(!isSaleOpen); setIsItRoomOpen(false); setIsCofeeOpen(false); }}
                                     className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
                                 >
                                     <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${isSaleOpen ? '' : '-rotate-90'}`}></i>
@@ -474,8 +478,10 @@ const Lan2 = () => {
                             {/*--------------------------------- Cofee --------------------------------------------*/}
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white transition-colors font-label" id="font-label">Cofee</h3>
+                                {/* Accordion: เมื่อกดเปิด "Cofee" จะปิด section อื่น (ห้อง IT, 3D Design) อัตโนมัติ
+                                   ถ้ากดซ้ำจะ toggle ปิดตัวเองได้ เพราะใช้ !iscofeeOpen */}
                                 <button
-                                    onClick={() => setIsCofeeOpen(!iscofeeOpen)}
+                                    onClick={() => { setIsCofeeOpen(!iscofeeOpen); setIsItRoomOpen(false); setIsSaleOpen(false); }}
                                     className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition"
                                 >
                                     <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${iscofeeOpen ? '' : '-rotate-90'}`}></i>

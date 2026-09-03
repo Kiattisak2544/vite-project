@@ -84,7 +84,7 @@ router.post("/server/check-routers", async (req, res) => {
                     // ปรับค่า timeout ให้เหมาะสม (เช่น 2 วินาที)
                     const pingRes = await ping.promise.probe(r.ip, {
                         timeout: 800,
-                        extra: ['-n', '3', '-w', '1000'] // สำหรับ Windows เพื่อความรวดเร็ว
+                        extra: ['-n', '4', '-w', '1000'] // สำหรับ Windows เพื่อความรวดเร็ว
                     });
 
                     return {
